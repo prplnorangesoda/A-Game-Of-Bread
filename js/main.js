@@ -3,7 +3,7 @@ var addAmount = new Decimal(1)
 var numToAddTo = new Decimal(1)
 var Fuck = new Decimal("1e16")
 var Cost = new Decimal(10)
-function loadShit() {
+function loadShit() { // idfk why but this shit doesn't load half the time
     console.log("shit loaded")
     document.getElementById("bodytypebeat").innerHTML = '<button id="addNumber" onclick="addNum()">loading...</button> <button id="buy" onclick="moreBread()">test</button><p id="test">0</p>'
     document.getElementById("test").innerText = numToAddTo
