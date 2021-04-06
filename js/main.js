@@ -14,6 +14,14 @@ function loadShit() { // idfk why but this shit doesn't load half the time
 function pageFullyLoaded() {
     
 }
+var TestVar = 0
+var Interval = window.setInterval(Update, 50);
+
+
+function Update(){
+    TestVar++;
+    console.log(TestVar)
+}
 function addNum() {
     numToAddTo = numToAddTo.plus(addAmount)
     document.getElementById("test").innerText = numToAddTo
