@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", loadShit, false);
 var addAmount = new Decimal(1)
 var numToAddTo = new Decimal(1)
 var Cost = new Decimal(10)
-var BreadGenerators = new Decimal(1)
+var BreadGenerators = new Decimal(0)
 var GenCost = new Decimal(100)
 function Update() {
 }
