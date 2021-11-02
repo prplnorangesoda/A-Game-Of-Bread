@@ -27,7 +27,7 @@ var Interval = window.setInterval(Update, 20);
 function Update(){
     var BreadPerTick = getBreadPerTick()
     numToAddTo = numToAddTo.plus(BreadPerTick)
-    document.getElementById("test").innerText = (Math.round(numToAddTo * 100) / 100).toFixed(2)
+    document.getElementById("test").innerText = numToAddTo.mag.toFixed(2)
     if(BreadGenerators.gte(2) && breadUp1 != true && displayingbreadUp1 != true) {
         document.getElementById("upgrades").innerHTML = document.getElementById("upgrades").innerHTML + '<button onclick="breadUp1Func()" id="breadUp1Button">Add +1 bread generated per each generator. Cost: 200</button>'
         displayingbreadUp1 = true
