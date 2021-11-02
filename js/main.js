@@ -9,7 +9,6 @@ var displayingbreadUp1 = false
 function Update() {
 }
 function loadShit() { // idfk why but this shit doesn't load half the time
-    console.log("shit loaded")
     document.getElementById("bodytypebeat").innerHTML = '<button id="addNumber" onclick="addNum()">loading...</button> <button id="buy" onclick="moreBread()">test</button> <button id="genBuy" onclick="breadGenerator()">100</button><p id="test">0</p><br><div id=upgrades></div>'
     document.getElementById("test").innerText = numToAddTo
     document.getElementById("addNumber").innerText = `Add ${addAmount} to the amount of bread`
@@ -28,7 +27,7 @@ var Interval = window.setInterval(Update, 20);
 function Update(){
     var BreadPerTick = getBreadPerTick()
     numToAddTo = numToAddTo.plus(BreadPerTick)
-    document.getElementById("test").innerText = Math.round(numToAddTo * 100) / 100
+    document.getElementById("test").innerText = (Math.round(numToAddTo * 100) / 100).toFixed(2)
     if(BreadGenerators.gte(2) && breadUp1 != true && displayingbreadUp1 != true) {
         document.getElementById("upgrades").innerHTML = document.getElementById("upgrades").innerHTML + '<button onclick="breadUp1Func()" id="breadUp1Button">Add +1 bread generated per each generator. Cost: 200</button>'
         displayingbreadUp1 = true
