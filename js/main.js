@@ -18,7 +18,7 @@ function loadShit() { // idfk why but this shit doesn't load half the time
 function breadUp1Func() {
     if(numToAddTo.gte(200)) {
         numToAddTo = numToAddTo.minus(200)
-        document.getElementById("test").innerText = numToAddTo
+        document.getElementById("test").innerText = numToAddTo.mag.toFixed(2)
         breadUp1 = true
         document.getElementById("breadUp1Button").style = "display:none;"
     }
@@ -35,7 +35,7 @@ function Update(){
 }
 function addNum() {
     numToAddTo = numToAddTo.plus(addAmount)
-    document.getElementById("test").innerText = Math.round(numToAddTo * 100) / 100
+    document.getElementById("test").innerText = numToAddTo.mag.toFixed(2)
 }
 function getBreadPerTick() {
     var ReturnVar = new Decimal(0) // the variable we will return
@@ -49,7 +49,7 @@ function moreBread() {
         Cost = Cost * 1.3
         Cost = Decimal.round(Cost)
         addAmount = addAmount.plus(1)
-        document.getElementById("test").innerText = numToAddTo
+        document.getElementById("test").innerText = numToAddTo.mag.toFixed(2)
         document.getElementById("buy").innerText = `Add +1 to bread adder. Cost: ${Cost}`
         document.getElementById("addNumber").innerText = `Add ${addAmount} to the amount of bread`
     }
@@ -63,7 +63,7 @@ function breadGenerator() {
         GenCost = GenCost * 1.3
         GenCost = Decimal.round(GenCost)
         BreadGenerators = BreadGenerators.plus(1)
-        document.getElementById("test").innerText = numToAddTo
+        document.getElementById("test").innerText = numToAddTo.mag.toFixed(2)
         document.getElementById("genBuy").innerText = `Generate +1 bread per second. Cost: ${GenCost}`
         document.getElementById("addNumber").innerText = `Add ${addAmount} to the amount of bread`
     }
