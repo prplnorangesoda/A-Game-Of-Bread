@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", loadShit, false);
+var debugMode = false
+var dmconfirmed = false
 var addAmount = new Decimal(1)
 var numToAddTo = new Decimal(1)
 var Cost = new Decimal(10)
@@ -8,7 +10,6 @@ var breadUp1 = false
 var displayingbreadUp1 = false
 var breadAdderAmount = new Decimal(1)
 var breadGenPerSecAmount = new Decimal(1)
-function Update() {}
 function loadShit() { // idfk why but this shit doesn't load half the time
     document.getElementById("bodytypebeat").innerHTML = '<button id="addNumber" onclick="addNum()">loading...</button> <button id="buy" onclick="moreBread()">test</button> <button id="genBuy" onclick="breadGenerator()">100</button><p id="test">0</p><br><div id=upgrades></div>'
     document.getElementById("test").innerText = numToAddTo
@@ -33,6 +34,25 @@ function Update(){
     if(BreadGenerators.gte(2) && breadUp1 != true && displayingbreadUp1 != true) {
         document.getElementById("upgrades").innerHTML = document.getElementById("upgrades").innerHTML + '<button onclick="breadUp1Func()" id="breadUp1Button">Add +1 bread generated per each generator. Cost: 200</button>'
         displayingbreadUp1 = true
+    }
+    if(debugMode) {
+        let debugPrompt = prompt("Are you sure you want to continue to Debug Mode? (y/n)")
+        if (debugPrompt === "y") {
+            numToAddTo = numToAddTo.minus(numToAddTo)
+            dmconfirmed = true
+            debugMode = false
+        }
+        else if (debugPrompt === "n") {
+            alert("Alright, not enabled")
+            debugMode = false
+        }
+        else {
+            alert("Could not parse user input!")
+            debugMode = false
+        }
+    }
+    if(dmconfirmed) {
+        numToAddTo = numToAddTo.plus("1e7")
     }
 }
 function addNum() {
