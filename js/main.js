@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", loadShit, false);
+document.addEventListener("DOMContentLoaded", loadContent, false);
 var debugMode = false
 var dmconfirmed = false
 var addAmount = new Decimal(1)
@@ -10,7 +10,14 @@ var breadUp1 = false
 var displayingbreadUp1 = false
 var breadAdderAmount = new Decimal(1)
 var breadGenPerSecAmount = new Decimal(1)
-function loadShit() { // idfk why but this shit doesn't load half the time
+class Upgrade {
+    constructor(name = "Unnamed",cost = new Decimal(1),shortid = "NoID") {
+        this.name = name
+        this.cost = cost
+        this.shortid = shortid
+    }
+}
+function loadContent() { // idfk why but this shit doesn't load half the time
     document.getElementById("bodytypebeat").innerHTML = '<button id="addNumber" onclick="addNum()">loading...</button> <button id="buy" onclick="moreBread()">test</button> <button id="genBuy" onclick="breadGenerator()">100</button><p id="test">0</p><br><div id=upgrades></div>'
     document.getElementById("test").innerText = numToAddTo
     document.getElementById("addNumber").innerText = `Add ${addAmount} to the amount of bread`
