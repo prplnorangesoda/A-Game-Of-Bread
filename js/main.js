@@ -4,13 +4,13 @@ class Upgrade {
     /**
      * @param  {string} name Long Name of upgrade.
      * @param  {number|Decimal} cost Cost of upgrade.
-     * @param  {boolean} [purchased] Is purchased or not.
      * @param  {string} shortid Short ID of the object. PLEASE USE VARIABLE NAME!!!!
+     * @param  {boolean} [purchased] Is purchased or not.
      * @param  {boolean} [displayed] If the object is instantly displayed in CSS.
      * 
      * @return {Upgrade}
      */
-    constructor(name,cost,purchased = false,shortid,displayed = false) {
+    constructor(name,cost,shortid,purchased = false,displayed = false) {
         this.name = name
         if(typeof cost === "number") {
             this.cost = new Decimal(cost)
@@ -29,7 +29,15 @@ class Upgrade {
     purchase(){
         if(numToAddTo.gte(this.cost)) {
             this.purchased = true
+            this.displayed = false
+            let button = document.getElementById(this.shortid)
+            button.style = 'display:none;'
             numToAddTo = numToAddTo.minus(this.cost)
+            return "Purchased"
+        }
+        else {
+            return new Error("Could not purchase!")
+            // NOTE: add else case
         }
     }
 
@@ -41,11 +49,10 @@ var numToAddTo = new Decimal(1)
 var Cost = new Decimal(10)
 var BreadGenerators = new Decimal(0)
 var GenCost = new Decimal(100)
-var genUp1 = new Upgrade("Faster Generators",200,false,shortid = "genUp1",false)
+var genUp1 = new Upgrade("Faster Generators",200,shortid = "genUp1",false,false)
 var displayinggenUp1 = false
 var breadAdderAmount = new Decimal(1)
 var breadGenPerSecAmount = new Decimal(1)
-
 function loadContent() {
     document.getElementById("bodytypebeat").innerHTML = '<button id="addNumber" onclick="addNum()">loading...</button> <button id="buy" onclick="moreBread()">test</button> <button id="genBuy" onclick="breadGenerator()">100</button><p id="test">0</p><br><div id=upgrades></div>'
     document.getElementById("test").innerText = numToAddTo
@@ -53,13 +60,18 @@ function loadContent() {
     document.getElementById("buy").innerText = `Add +${breadAdderAmount} to bread adder. Cost: ${Cost}`
     document.getElementById("genBuy").innerText = `Generate +${breadGenPerSecAmount} bread per second. Cost: ${GenCost}`
 }
-function UpgradeFunction(index = Number) {
-    if(numToAddTo.gte(200)) {
-        numToAddTo = numToAddTo.minus(200)
-        document.getElementById("test").innerText = numToAddTo.mag.toFixed(2)
-        genUp1 = true
-        breadGenPerSecAmount = breadGenPerSecAmount.plus(1)
-        document.getElementById("genUp1Button").style = "display:none;"
+function UpgradeFunction(index) {
+    if(typeof index != "number") {
+        return new Error("Index is not a number!")
+    }
+    let Upg = eval("UpgradeList")
+    Upg = eval(Upg[index])
+    try {
+        Upg.purchase()
+    }
+    catch(err) {
+        console.error(err)
+        console.warn("Cannot purchase upgrade!")
     }
 }    
 var Interval = window.setInterval(Update, 20);
@@ -67,9 +79,9 @@ function Update(){
     var BreadPerTick = getBreadPerTick()
     numToAddTo = numToAddTo.plus(BreadPerTick)
     document.getElementById("test").innerText = numToAddTo.mag.toFixed(2)
-    if(BreadGenerators.gte(2) && genUp1 != true && displayinggenUp1 != true) {
-        document.getElementById("upgrades").innerHTML = document.getElementById("upgrades").innerHTML + '<button onclick="UpgradeFunction()" id="genUp1Button">Add +1 bread generated per each generator. Cost: 200</button>'
-        displayinggenUp1 = true
+    if(BreadGenerators.gte(2) && genUp1.purchased === false && genUp1.displayed === false) {
+        genUp1.displayed = true
+        document.getElementById("upgrades").innerHTML = document.getElementById("upgrades").innerHTML + '<button onclick="try{UpgradeFunction(0)}catch(err){console.error(err)}" id="genUp1">Add +1 bread generated per each generator. Cost: 200</button>'
     }
     if(debugMode) {
         let debugPrompt = prompt("Are you sure you want to continue to Debug Mode? (y/n)")
