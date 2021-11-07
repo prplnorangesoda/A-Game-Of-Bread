@@ -109,6 +109,7 @@ function displayUpgrade(UpgradeName,yesno) {
         throw new Error("yesno :(")
     }
 }
+var thisvariableorsumn;
 function Update(){
     var BreadPerTick = getBreadPerTick()
     numToAddTo = numToAddTo.plus(BreadPerTick)
@@ -126,8 +127,14 @@ function Update(){
 
     }
     { // Upgrade effects
-        if(breadUp1.purchased && breadAdderAmount === 1) {
-            breadAdderAmount++
+        if(breadUp1.purchased && thisvariableorsumn != true) {
+            breadAdderAmount = new Decimal(2)
+            document.getElementById("addNumber").innerText = `Add ${addAmount} to the amount of bread`
+            thisvariableorsumn = true
+            numToAddTo = numToAddTo.plus(Cost)
+            breadAdderMoreAmount = breadAdderMoreAmount.minus(1)
+            moreBread()
+            document.getElementById("buy").innerText = `Add +${breadAdderAmount} to bread adder. Cost: ${Cost}`
         }
     }
     if(debugMode) {
@@ -167,14 +174,15 @@ function moreBread() {
         Cost = Cost * 1.3
         Cost = Decimal.round(Cost)
         document.getElementById("test").innerText = numToAddTo.mag.toFixed(2)
-        document.getElementById("buy").innerText = `Add +1 to bread adder. Cost: ${Cost}`
-        document.getElementById("addNumber").innerText = `Add ${addAmount} to the amount of bread`
+        document.getElementById("buy").innerText = `Add +${breadAdderAmount} to bread adder. Cost: ${Cost}`
         var finalBreadAmount = new Decimal(0)
+        console.log(breadUp1.purchased)
         if(breadUp1.purchased) {finalBreadAmount = breadAdderMoreAmount.times(2)}
         else {finalBreadAmount = breadAdderMoreAmount}
         finalBreadAmount++
         addAmount = finalBreadAmount
         addAmount = new Decimal(addAmount)
+        document.getElementById("addNumber").innerText = `Add ${addAmount} to the amount of bread`
     }
     else {
         return null
