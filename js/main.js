@@ -1,3 +1,4 @@
+var breadAdderMoreAmount = new Decimal(0)
 var addAmount = new Decimal(1)
 var numToAddTo = new Decimal(1)
 var Cost = new Decimal(10)
@@ -40,7 +41,7 @@ class Upgrade {
         { // html block
         let upgrades = document.getElementById("upgrades")
         console.log(upgrades)
-        upgrades.innerHTML = upgrades.innerHTML + `<button id="${this.shortid}" onclick="try{UpgradeFunction(${this.arrayIndex})}catch(err){console.error(err)}">${this.description} Cost: ${this.cost}</button>`
+        upgrades.innerHTML = upgrades.innerHTML + `<button id="${this.shortid}" onclick="try{UpgradeFunction(${this.arrayIndex})}catch(err){console.error(err)}" style="align:center;">${this.description} Cost: ${this.cost}</button>`
         let upgradeActual = document.getElementById(this.shortid)
         if(!this.displayed) {
             upgradeActual.style = "display:none;"
@@ -67,8 +68,12 @@ class Upgrade {
 }
 var debugMode = false
 var dmconfirmed = false
-var genUp1 = new Upgrade("Faster Generators",200,shortid = "genUp1","Increase bread generated from all generators by 1.",false,false)
-var breadUp1 = new Upgrade("Better Bakers",100,"breadUp1","Increase bread added from adders by 1.",false,true)
+{ // Upgrade list
+    var genUp1 = new Upgrade("Faster Generators",200,shortid = "genUp1","Increase bread generated from all generators by 1.",false,false)
+    var breadUp1 = new Upgrade("Better Bakers",100,"breadUp1","Increase bread added from adders by 1.",false,false)
+    var genUp2 = new Upgrade("Even Faster Generators",500,"genUp2","Increase bread generated from all generators by 1, again.",false,false)
+}
+
 var displayinggenUp1 = false
 
 function UpgradeFunction(index) {
@@ -86,12 +91,44 @@ function UpgradeFunction(index) {
     }
 }    
 var Interval = window.setInterval(Update, 20);
+var UpgradeCategory = document.getElementById("upgrades")
+var UpgradeChildren = UpgradeCategory.children
+function displayUpgrade(UpgradeName,yesno) {
+    let Upgrade = UpgradeChildren.namedItem(UpgradeName)
+    let uhh = eval(UpgradeName)
+    if(typeof yesno == undefined) {yesno = true}
+    if(yesno){
+        Upgrade.style = Upgrade.style + "display:block;"
+        uhh.displayed = true
+    }
+    else if(!yesno) {
+        Upgrade.style = Upgrade.style + "display:none;"
+        uhh.displayed = false
+    }
+    else {
+        throw new Error("yesno :(")
+    }
+}
 function Update(){
     var BreadPerTick = getBreadPerTick()
     numToAddTo = numToAddTo.plus(BreadPerTick)
     document.getElementById("test").innerText = numToAddTo.mag.toFixed(2)
-    if(BreadGenerators.gte(2) && genUp1.purchased === false && genUp1.displayed === false) {
-        genUp1.displayed = true
+    { // Upgrade conditions
+        if(addAmount.gte(3) && breadUp1.purchased === false && breadUp1.displayed === false) {
+            displayUpgrade("breadUp1",true)
+        }
+        if(BreadGenerators.gte(2) && genUp1.purchased === false && genUp1.displayed === false) {
+            displayUpgrade("genUp1",true)
+        }
+        if(BreadGenerators.gte(4) && genUp2.purchased === false && genUp2.displayed === false) {
+            displayUpgrade("genUp2",true)
+        }
+
+    }
+    { // Upgrade effects
+        if(breadUp1.purchased && breadAdderAmount === 1) {
+            breadAdderAmount++
+        }
     }
     if(debugMode) {
         let debugPrompt = prompt("Are you sure you want to continue to Debug Mode? (y/n)")
@@ -125,17 +162,24 @@ function getBreadPerTick() {
 }
 function moreBread() {
     if(numToAddTo.gte(Cost)) {
+        breadAdderMoreAmount = breadAdderMoreAmount.plus(1)
         numToAddTo = numToAddTo.minus(Cost)
         Cost = Cost * 1.3
         Cost = Decimal.round(Cost)
-        addAmount = addAmount.plus(1)
         document.getElementById("test").innerText = numToAddTo.mag.toFixed(2)
         document.getElementById("buy").innerText = `Add +1 to bread adder. Cost: ${Cost}`
         document.getElementById("addNumber").innerText = `Add ${addAmount} to the amount of bread`
+        var finalBreadAmount = new Decimal(0)
+        if(breadUp1.purchased) {finalBreadAmount = breadAdderMoreAmount.times(2)}
+        else {finalBreadAmount = breadAdderMoreAmount}
+        finalBreadAmount++
+        addAmount = finalBreadAmount
+        addAmount = new Decimal(addAmount)
     }
     else {
         return null
     }
+    addAmount
 }
 function breadGenerator() {
     if(numToAddTo.gte(GenCost)) {
