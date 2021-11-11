@@ -69,7 +69,7 @@ class Upgrade {
 var debugMode = false
 var dmconfirmed = false
 { // Upgrade list
-    var genUp1 = new Upgrade("Faster Generators",200,shortid = "genUp1","Increase bread generated from all generators by 1.",false,false)
+    var genUp1 = new Upgrade("Faster Generators",200,"genUp1","Increase bread generated from all generators by 1.",false,false)
     var breadUp1 = new Upgrade("Better Bakers",100,"breadUp1","Increase bread added from adders by 1.",false,false)
     var genUp2 = new Upgrade("Even Faster Generators",500,"genUp2","Increase bread generated from all generators by 1, again.",false,false)
 }
