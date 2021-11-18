@@ -1,3 +1,24 @@
+// most of the player and local storage saving systems are all taken from Jacorb90's web game Prestige Tree
+// go check it out, it's awesome
+var player;
+let VERSION = {
+    num: 0.2,
+    pre: 1,
+    name: "Variables Pre-Release"
+}
+// completely yoinked from Jacorb90's Prestige Tree versioning system
+// https://github.com/Jacorb90/Prestige-Tree-Classic/blob/master/js/game.js
+VERSION.withoutName = "v" + VERSION.num + (VERSION.pre ? " Pre-Release " + VERSION.pre : VERSION.beta ? " Beta " + VERSION.beta : "") + (VERSION.patch ? (" Patch " + VERSION.patch) : "")
+VERSION.withName = VERSION.withoutName + (VERSION.name ? ": " + VERSION.name : "")
+
+function getStartPlayer() {
+    return {
+        breadAddAmount: new Decimal(1), // addAmount
+        breadAdderMoreAmount: new Decimal(0),
+        
+        
+    }
+}
 var breadAdderMoreAmount = new Decimal(0)
 var addAmount = new Decimal(1)
 var numToAddTo = new Decimal(1)
