@@ -1,10 +1,17 @@
+/* INFO ON MAINTAINING: for future me and/or contributors (thank you <3) */
+
+/* Index of Terms                                                                                        */
+/* CTRL+F "TODO": Stuff that needs to be done in future but is not high-priority or being focused on atm */
+/* CTRL+F "FIXME": Needs to be fixed, debugged, or improved in some way, but it is working for now       */
+
+
 // most of the player and local storage saving systems are all taken from Jacorb90's web game Prestige Tree
 // go check it out, it's awesome
 var player;
 let VERSION = {
     num: 0.2,
-    pre: 1,
-    name: "Variables Pre-Release"
+    beta: 1,
+    name: "Variables Update"
 }
 // completely yoinked from Jacorb90's Prestige Tree versioning system
 // https://github.com/Jacorb90/Prestige-Tree-Classic/blob/master/js/game.js
@@ -12,10 +19,24 @@ VERSION.withoutName = "v" + VERSION.num + (VERSION.pre ? " Pre-Release " + VERSI
 VERSION.withName = VERSION.withoutName + (VERSION.name ? ": " + VERSION.name : "")
 
 function getStartPlayer() {
-    return {
-        breadAddAmount: new Decimal(1), // addAmount
+    return { // comments are old variable names for knowing which is which
+        SAVEVERSION: VERSION,
         breadAdderMoreAmount: new Decimal(0),
-        
+        mainNumber: new Decimal(1), // numToAddTo
+        breadCost: new Decimal(10), // Cost
+        breadGenerators: {
+            count: new Decimal(0), // BreadGenerators
+            perSecondAmount: new Decimal(1), // breadGenPerSecAmount
+            unl: { /* Unlocked Upgrades to go here */ }
+        },
+        breadAdder: {
+            count: new Decimal(1), // breadAdderMoreAmount
+            per: new Decimal(1), // breadAdderAmount
+            unl: { /* Unlocked upgrades will go here */ }
+        },
+        devMode: false, // debugMode
+        devModeConfirmed: false, // dmconfirmed
+        tickRate: 20
         
     }
 }
@@ -59,7 +80,7 @@ class Upgrade {
         this.arrayIndex = UpgradeList.length
         this.description = description
         UpgradeList.push(shortid)
-        { // html block
+        { // html shi
         let upgrades = document.getElementById("upgrades")
         console.log(upgrades)
         upgrades.innerHTML = upgrades.innerHTML + `<button id="${this.shortid}" onclick="try{UpgradeFunction(${this.arrayIndex})}catch(err){console.error(err)}" style="align:center;">${this.description} Cost: ${this.cost}</button>`
@@ -82,7 +103,7 @@ class Upgrade {
         }
         else {
             return new Error("Could not purchase!")
-            // NOTE: add else case
+            // TODO: add else case
         }
     }
 
@@ -94,9 +115,6 @@ var dmconfirmed = false
     var breadUp1 = new Upgrade("Better Bakers",100,"breadUp1","Increase bread added from adders by 1.",false,false)
     var genUp2 = new Upgrade("Even Faster Generators",500,"genUp2","Increase bread generated from all generators by 1, again.",false,false)
 }
-
-var displayinggenUp1 = false
-
 function UpgradeFunction(index) {
     if(typeof index != "number") {
         return new Error("Index is not a number!")
