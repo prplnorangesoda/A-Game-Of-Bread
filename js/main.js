@@ -30,12 +30,35 @@ function getStartPlayer() {
         breadGenerators: {
             count: new Decimal(0), // BreadGenerators
             perSecondAmount: new Decimal(1), // breadGenPerSecAmount
-            unl: { /* Unlocked Upgrades to go here */ }
+            upgs: {
+                1: {
+                    name: "Faster Generators",
+                    cost: new Decimal(200),
+                    desc: "Increase bread generated from all generators by 1.",
+                    unlocked?: false,
+                    displayed?: false
+                },
+                2: {
+                    name: "Even Faster Generators",
+                    cost: new Decimal(500),
+                    desc: "Increase bread generated from all generators by 1, again.",
+                    unlocked?: false,
+                    displayed?: false
+                }
+            }
         },
         breadAdder: {
             count: new Decimal(1), // breadAdderMoreAmount
             per: new Decimal(1), // breadAdderAmount
-            unl: { /* Unlocked upgrades will go here */ }
+            upgs: {
+                1: {
+                    name: "Better Bakers",
+                    cost: new Decimal(100),
+                    desc: "Increase bread added from adders by 1.",
+                    unlocked?: false,
+                    displayed?: false
+                }
+            }
         },
         devMode: false, // debugMode
         devModeConfirmed: false, // dmconfirmed
@@ -54,7 +77,7 @@ function load() {
 	else player = JSON.parse(atob(get))
 	player.time = Date.now()
 }
-
+load()
 var breadAdderMoreAmount = new Decimal(0)
 var addAmount = new Decimal(1)
 var Cost = new Decimal(10)
@@ -143,7 +166,8 @@ function UpgradeFunction(index) {
         console.warn("Cannot purchase upgrade!")
     }
 }    
-var Interval = window.setInterval(Update, 20);
+var Interval = window.setInterval(Update, player.tickRate);
+var LoadRepeat = window.setInterval(load, 60000)
 var UpgradeCategory = document.getElementById("upgrades")
 var UpgradeChildren = UpgradeCategory.children
 function displayUpgrade(UpgradeName,yesno) {
