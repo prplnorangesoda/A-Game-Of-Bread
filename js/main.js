@@ -1,8 +1,11 @@
 /* INFO ON MAINTAINING: for future me and/or contributors (thank you <3) */
 
 /* Index of Terms                                                                                        */
-/* CTRL+F "TODO": Stuff that needs to be done in future but is not high-priority or being focused on atm */
-/* CTRL+F "FIXME": Needs to be fixed, debugged, or improved in some way, but it is working for now       */
+/* CTRL+F "TODO": Stuff that needs to be done in future but is not necessarily                           */
+/* high-priority or being focused on atm                                                                 */
+/*                                                                                                       */
+/* CTRL+F "FIXME": Needs to be fixed, debugged, or improved in some way, but it                          */
+/* is working for now                                                                                    */
 
 
 // most of the player and local storage saving systems are all taken from Jacorb90's web game Prestige Tree
@@ -36,20 +39,31 @@ function getStartPlayer() {
         },
         devMode: false, // debugMode
         devModeConfirmed: false, // dmconfirmed
-        tickRate: 20
+        tickRate: 20 // TODO: implement tickrate in future
         
     }
 }
+// "your" code? more like our code now bitch
+function save() {
+	localStorage.setItem("a-game-of-bread", btoa(JSON.stringify(player)))
+}
+
+function load() {
+	let get = localStorage.getItem("a-game-of-bread");
+	if (get===null||get===undefined) player = getStartPlayer()
+	else player = JSON.parse(atob(get))
+	player.time = Date.now()
+}
+
 var breadAdderMoreAmount = new Decimal(0)
 var addAmount = new Decimal(1)
-var numToAddTo = new Decimal(1)
 var Cost = new Decimal(10)
 var BreadGenerators = new Decimal(0)
 var GenCost = new Decimal(100)
 var breadAdderAmount = new Decimal(1)
 var breadGenPerSecAmount = new Decimal(1)
     document.getElementById("bodytypebeat").innerHTML = '<button id="addNumber" onclick="addNum()">loading...</button> <button id="buy" onclick="moreBread()">test</button> <button id="genBuy" onclick="breadGenerator()">100</button><p id="test">0</p><br><div id="upgrades"></div>'
-    document.getElementById("test").innerText = numToAddTo.mag.toFixed(2)
+    document.getElementById("test").innerText = player.mainNumber.mag.toFixed(2)
     document.getElementById("addNumber").innerText = `Add ${addAmount} to the amount of bread`
     document.getElementById("buy").innerText = `Add +${breadAdderAmount} to bread adder. Cost: ${Cost}`
     document.getElementById("genBuy").innerText = `Generate +${breadGenPerSecAmount} bread per second. Cost: ${GenCost}`
@@ -93,12 +107,12 @@ class Upgrade {
     }
 
     purchase(){
-        if(numToAddTo.gte(this.cost)) {
+        if(player.mainNumber.gte(this.cost)) {
             this.purchased = true
             this.displayed = false
             let button = document.getElementById(this.shortid)
             button.style = 'display:none;'
-            numToAddTo = numToAddTo.minus(this.cost)
+            player.mainNumber = player.mainNumber.minus(this.cost)
             return "Purchased"
         }
         else {
@@ -151,8 +165,8 @@ function displayUpgrade(UpgradeName,yesno) {
 var thisvariableorsumn;
 function Update(){
     var BreadPerTick = getBreadPerTick()
-    numToAddTo = numToAddTo.plus(BreadPerTick)
-    document.getElementById("test").innerText = numToAddTo.mag.toFixed(2)
+    player.mainNumber = player.mainNumber.plus(BreadPerTick)
+    document.getElementById("test").innerText = player.mainNumber.mag.toFixed(2)
     { // Upgrade conditions
         if(addAmount.gte(3) && breadUp1.purchased === false && breadUp1.displayed === false) {
             displayUpgrade("breadUp1",true)
@@ -170,7 +184,7 @@ function Update(){
             breadAdderAmount = new Decimal(2)
             document.getElementById("addNumber").innerText = `Add ${addAmount} to the amount of bread`
             thisvariableorsumn = true
-            numToAddTo = numToAddTo.plus(Cost)
+            player.mainNumber = player.mainNumber.plus(Cost)
             breadAdderMoreAmount = breadAdderMoreAmount.minus(1)
             moreBread()
             document.getElementById("buy").innerText = `Add +${breadAdderAmount} to bread adder. Cost: ${Cost}`
@@ -179,7 +193,7 @@ function Update(){
     if(debugMode) {
         let debugPrompt = prompt("Are you sure you want to continue to Debug Mode? (y/n)")
         if (debugPrompt === "y") {
-            numToAddTo = numToAddTo.minus(numToAddTo)
+            player.mainNumber = player.mainNumber.minus(player.mainNumber)
             dmconfirmed = true
             debugMode = false
         }
@@ -193,12 +207,12 @@ function Update(){
         }
     }
     if(dmconfirmed) {
-        numToAddTo = numToAddTo.plus("1e7")
+        player.mainNumber = player.mainNumber.plus("1e7")
     }
 }
 function addNum() {
-    numToAddTo = numToAddTo.plus(addAmount)
-    document.getElementById("test").innerText = numToAddTo.mag.toFixed(2)
+    player.mainNumber = player.mainNumber.plus(addAmount)
+    document.getElementById("test").innerText = player.mainNumber.mag.toFixed(2)
 }
 function getBreadPerTick() {
     var ReturnVar = new Decimal(0) // the variable we will return
@@ -207,12 +221,12 @@ function getBreadPerTick() {
     return ReturnVar
 }
 function moreBread() {
-    if(numToAddTo.gte(Cost)) {
+    if(player.mainNumber.gte(Cost)) {
         breadAdderMoreAmount = breadAdderMoreAmount.plus(1)
-        numToAddTo = numToAddTo.minus(Cost)
+        player.mainNumber = player.mainNumber.minus(Cost)
         Cost = Cost * 1.3
         Cost = Decimal.round(Cost)
-        document.getElementById("test").innerText = numToAddTo.mag.toFixed(2)
+        document.getElementById("test").innerText = player.mainNumber.mag.toFixed(2)
         document.getElementById("buy").innerText = `Add +${breadAdderAmount} to bread adder. Cost: ${Cost}`
         var finalBreadAmount = new Decimal(0)
         console.log(breadUp1.purchased)
@@ -229,12 +243,12 @@ function moreBread() {
     addAmount
 }
 function breadGenerator() {
-    if(numToAddTo.gte(GenCost)) {
-        numToAddTo = numToAddTo.minus(GenCost)
+    if(player.mainNumber.gte(GenCost)) {
+        player.mainNumber = player.mainNumber.minus(GenCost)
         GenCost = GenCost * 1.3
         GenCost = Decimal.round(GenCost)
         BreadGenerators = BreadGenerators.plus(1)
-        document.getElementById("test").innerText = numToAddTo.mag.toFixed(2)
+        document.getElementById("test").innerText = player.mainNumber.mag.toFixed(2)
         document.getElementById("genBuy").innerText = `Generate +${breadGenPerSecAmount} bread per second. Cost: ${GenCost}`
         document.getElementById("addNumber").innerText = `Add ${addAmount} to the amount of bread`
     }
