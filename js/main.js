@@ -26,23 +26,23 @@ function getStartPlayer() {
         SAVEVERSION: VERSION,
         breadAdderMoreAmount: new Decimal(0),
         mainNumber: new Decimal(1), // numToAddTo
-        breadCost: new Decimal(10), // Cost
         breadGenerators: {
             count: new Decimal(0), // BreadGenerators
             perSecondAmount: new Decimal(1), // breadGenPerSecAmount
+            cost: new Decimal(100),
             upgs: {
-                1: {
+                up1: {
                     name: "Faster Generators",
                     cost: new Decimal(200),
                     desc: "Increase bread generated from all generators by 1.",
-                    unlocked?: false,
+                    purchased?: false,
                     displayed?: false
                 },
-                2: {
+                up2: {
                     name: "Even Faster Generators",
                     cost: new Decimal(500),
                     desc: "Increase bread generated from all generators by 1, again.",
-                    unlocked?: false,
+                    purchased?: false,
                     displayed?: false
                 }
             }
@@ -50,6 +50,7 @@ function getStartPlayer() {
         breadAdder: {
             count: new Decimal(1), // breadAdderMoreAmount
             per: new Decimal(1), // breadAdderAmount
+            cost: new Decimal(10),
             upgs: {
                 1: {
                     name: "Better Bakers",
@@ -145,26 +146,40 @@ class Upgrade {
     }
 
 }
-var debugMode = false
-var dmconfirmed = false
 { // Upgrade list
     var genUp1 = new Upgrade("Faster Generators",200,shortid = "genUp1","Increase bread generated from all generators by 1.",false,false)
     var breadUp1 = new Upgrade("Better Bakers",100,"breadUp1","Increase bread added from adders by 1.",false,false)
     var genUp2 = new Upgrade("Even Faster Generators",500,"genUp2","Increase bread generated from all generators by 1, again.",false,false)
 }
-function UpgradeFunction(index) {
-    if(typeof index != "number") {
-        return new Error("Index is not a number!")
+function UpgradeFunction(name) { // SPECIFY FULL PATH: player.breadGenerators.upg.up1 NOT JUST up1!
+    if (typeof name != "string") return new Error(name.name + " is not a string!")
+    if (!name.purchased) return new Error(name.name + " is already purchased!")
+    if (player.mainNumber.gte(name.cost)) {
+        try {
+            player.mainNumber = player.mainNumber.minus(name.cost)
+            name.purchased = true
+            if(player.mainNumber.lte(0)) player.mainNumber = player.mainNumber.plus(name.cost); name.purchased = false; throw new Error("MainNumber will be negative!")
+        }
+        catch(err) {
+            console.error("Error occurred in UpgradeFunction: " + err)
+        }
+
     }
-    let Upg = eval("UpgradeList")
-    Upg = eval(Upg[index])
-    try {
-        Upg.purchase()
+    else {
+        
     }
-    catch(err) {
-        console.error(err)
-        console.warn("Cannot purchase upgrade!")
-    }
+    // if(typeof index != "number") {
+    //     return new Error("Index is not a number!")
+    // }
+    // let Upg = eval("UpgradeList")
+    // Upg = eval(Upg[index])
+    // try {
+    //     Upg.purchase()
+    // }
+    // catch(err) {
+    //     console.error(err)
+    //     console.warn("Cannot purchase upgrade!")
+    // }
 }    
 var Interval = window.setInterval(Update, player.tickRate);
 var LoadRepeat = window.setInterval(load, 60000)
@@ -195,8 +210,8 @@ function Update(){
         if(addAmount.gte(3) && breadUp1.purchased === false && breadUp1.displayed === false) {
             displayUpgrade("breadUp1",true)
         }
-        if(BreadGenerators.gte(2) && genUp1.purchased === false && genUp1.displayed === false) {
-            displayUpgrade("genUp1",true)
+        if(BreadGenerators.gte(2) && player.breadGenerators.upgs.up1.purchased === false && player.breadGenerators.upgs.up1.displayed === false) {
+            displayUpgrade("player.breadGenerators.upgs.up1",true)
         }
         if(BreadGenerators.gte(4) && genUp2.purchased === false && genUp2.displayed === false) {
             displayUpgrade("genUp2",true)
@@ -214,7 +229,7 @@ function Update(){
             document.getElementById("buy").innerText = `Add +${breadAdderAmount} to bread adder. Cost: ${Cost}`
         }
     }
-    if(debugMode) {
+    if(player.devMode) {
         let debugPrompt = prompt("Are you sure you want to continue to Debug Mode? (y/n)")
         if (debugPrompt === "y") {
             player.mainNumber = player.mainNumber.minus(player.mainNumber)
@@ -230,7 +245,7 @@ function Update(){
             debugMode = false
         }
     }
-    if(dmconfirmed) {
+    if(player.devModeConfirmed) {
         player.mainNumber = player.mainNumber.plus("1e7")
     }
 }
@@ -239,19 +254,19 @@ function addNum() {
     document.getElementById("test").innerText = player.mainNumber.mag.toFixed(2)
 }
 function getBreadPerTick() {
-    var ReturnVar = new Decimal(0) // the variable we will return
-    ReturnVar = ReturnVar.plus(BreadGenerators*0.02)
-    if(genUp1.purchased) {ReturnVar = ReturnVar.times(2)}
+    var ReturnVar = new Decimal(0)
+    ReturnVar = ReturnVar.plus(player.breadGenerator.per*0.02)
+    if(player.breadGenerators.upgs.up1.purchased) {ReturnVar = ReturnVar.times(2)}
     return ReturnVar
 }
 function moreBread() {
-    if(player.mainNumber.gte(Cost)) {
+    if(player.mainNumber.gte(player.breadAdder.cost)) {
         breadAdderMoreAmount = breadAdderMoreAmount.plus(1)
-        player.mainNumber = player.mainNumber.minus(Cost)
-        Cost = Cost * 1.3
-        Cost = Decimal.round(Cost)
+        player.mainNumber = player.mainNumber.minus(player.breadAdder.cost)
+        player.breadAdder.cost = player.breadAdder.cost.times(1.3)
+        player.breadAdder.cost = Decimal.round(player.breadAdder.cost)
         document.getElementById("test").innerText = player.mainNumber.mag.toFixed(2)
-        document.getElementById("buy").innerText = `Add +${breadAdderAmount} to bread adder. Cost: ${Cost}`
+        document.getElementById("buy").innerText = `Add +${breadAdderAmount} to bread adder. Cost: ${player.breadAdder.cost}`
         var finalBreadAmount = new Decimal(0)
         console.log(breadUp1.purchased)
         if(breadUp1.purchased) {finalBreadAmount = breadAdderMoreAmount.times(2)}
