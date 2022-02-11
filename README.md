@@ -1,3 +1,7 @@
-# A-Game-Of-Bread
-An idle game made by me to test out Javascript/HTML5 games.
-It should be up on my Github Pages
+# A Game Of Bread
+
+
+An old idle game I made when I was learning web-game development.
+
+
+Play at your own risk.
